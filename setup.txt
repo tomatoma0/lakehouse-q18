@@ -1,0 +1,20 @@
+# 1. Запуск MinIO (SILO)
+docker run -d --name lakehouse-minio -p 9000:9000 -p 9001:9001 -e MINIO_ROOT_USER=minioadmin -e MINIO_ROOT_PASSWORD=minioadmin -v minio-data:/data pgsty/silo:latest server /data --console-address ":9001"
+
+# 2. Запуск Postgres
+docker run -d --name lakehouse-pg -e POSTGRES_PASSWORD=postgres -p 5432:5432 -v pg-data:/var/lib/postgresql/data postgres:17
+
+# 3. Запуск Lakekeeper (миграции и сервер)
+# (Вставь команды docker run --rm ... migrate и docker run -d --name lakekeeper ... serve)
+
+# 4. Регистрация warehouse demo
+curl.exe -X POST http://localhost:8181/management/v1/warehouse -H "Content-Type: application/json" -d "@create-warehouse.json"
+
+# 5. Запуск Trino
+docker run -d --name trino -p 8080:8080 -v "${PWD}\catalog:/etc/trino/catalog" trinodb/trino:476
+
+# 6. Запуск Metabase
+docker run -d --name metabase -p 3000:3000 -v "C:\Users\polzovatel\metabase-plugins:/app/plugins" -e MB_PLUGINS_DIR=/app/plugins metabase/metabase:latest
+
+# 7. SQL-запросы для медальона
+-- Создание Bronze, Silver, Gold (скопируй из отчета)
